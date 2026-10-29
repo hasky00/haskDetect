@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HaskDetect Case 001</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a forensic case file. One column of running text, evidence blocks set in mono on slightly raised panels, a strict vertical timeline. */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --fg:#141a21; --muted:#5b6673; --rule:#d5dbe2;
+  --accent:#b54708; --accent-soft:#fde8d4; --live:#9f1239; --live-soft:#fde2e7; --ok:#1f6f4a;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1317; --panel:#171c22; --fg:#e6eaee; --muted:#95a0ab; --rule:#2a323b;
+  --accent:#f0a05a; --accent-soft:#3a2614; --live:#fb7185; --live-soft:#3b1620; --ok:#5fd3a0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1317; --panel:#171c22; --fg:#e6eaee; --muted:#95a0ab; --rule:#2a323b;
+  --accent:#f0a05a; --accent-soft:#3a2614; --live:#fb7185; --live-soft:#3b1620; --ok:#5fd3a0; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.55;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.wrap{max-width:760px;margin:0 auto}
+header{padding-block:40px 24px;border-bottom:1px solid var(--rule)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(28px,6vw,40px);line-height:1.1;margin:10px 0 8px;text-wrap:balance;letter-spacing:-.01em}
+.lede{font-size:18px;color:var(--muted);margin:0 0 20px;max-width:62ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.status{display:inline-flex;align-items:center;gap:8px;background:var(--live-soft);color:var(--live);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:4px}
+.status i{width:8px;height:8px;border-radius:50%;background:var(--live);display:inline-block}
+@media (prefers-reduced-motion:no-preference){.status i{animation:pulse 1.6s ease-in-out infinite}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+h2{font-size:22px;margin:40px 0 12px;letter-spacing:-.01em;text-wrap:balance}
+h3{font-size:16px;margin:24px 0 8px}
+p{margin:0 0 14px;max-width:68ch}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:14px 16px;margin:16px 0}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-family:var(--mono);font-size:13px}
+.kv b{color:var(--muted);font-weight:500}
+.kv span{min-width:0;overflow-wrap:anywhere}
+.addr{font-family:var(--mono);font-size:13px;overflow-wrap:anywhere}
+.tl{list-style:none;margin:16px 0;padding:0;border-left:2px solid var(--rule)}
+.tl li{position:relative;padding:0 0 18px 20px}
+.tl li::before{content:"";position:absolute;left:-6px;top:7px;width:10px;height:10px;border-radius:50%;background:var(--rule)}
+.tl li.hit::before{background:var(--accent)}
+.tl li.live::before{background:var(--live)}
+.tl time{font-family:var(--mono);font-size:13px;color:var(--muted);display:block;margin-bottom:2px}
+.tl p{margin:0}
+.callout{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 16px;margin:20px 0;border-radius:0 6px 6px 0}
+.callout.live{border-color:var(--live);background:var(--live-soft)}
+.callout p:last-child{margin:0}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto;margin:16px 0}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.num{text-align:right;font-family:var(--mono)}
+td .addr{font-size:12px}
+.sig{display:grid;gap:10px;margin:16px 0}
+.sig>div{display:grid;grid-template-columns:32px minmax(0,1fr);gap:12px;align-items:start;background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:14px 16px}
+.sig>div>div{min-width:0}
+.sig .n{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600;padding-top:3px}
+.sig b{display:block;margin-bottom:3px;font-size:16px}
+.sig small{color:var(--muted);font-size:14px;line-height:1.5}
+ul.plain{padding-left:20px;margin:0 0 14px}
+ul.plain li{margin-bottom:6px}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted)}
+footer p{margin:0 0 6px}
+a{color:var(--accent)}
+code{font-family:var(--mono);font-size:.92em}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">HaskDetect · Case 001 · Chain forensics</div>
+  <h1>The Binance 14 hot wallet drain: how a signed EIP-7702 backdoor swept 65 assets in one call</h1>
+  <p class="lede">An on-chain reconstruction of the 29 October 2026 Binance incident, built from raw Ethereum node data. Every claim below links to a transaction hash you can verify yourself.</p>
+  <div class="meta">
+    <span class="status"><i></i>Backdoor still live at time of writing</span>
+    <span>Written 29 Oct 2026, 23:40 CET</span>
+    <span>Chain: Ethereum mainnet</span>
+    <span>Source: public RPC + Blockscout, no proprietary labels</span>
+  </div>
+</header>
+
+<h2>What happened, in one paragraph</h2>
+<p>Between 20:20 and 21:44 UTC on 29 October 2026, an attacker who held the private key for Binance's hot wallet <span class="addr">0x28C6c06298d514Db089934071355E5743bf21d60</span> ("Binance 14") did not drain it the ordinary way. Instead they used EIP-7702, the Pectra upgrade feature that lets a normal account borrow a contract's code, to install attacker-written code onto the Binance 14 account itself. Three and a half minutes later they called one function on it, <code>sweep(to, tokens[65])</code>, and 167,464 ETH plus 63 tokens including 1.615 billion USDT left in a single transaction. A second Binance hot wallet was emptied of 28,005 ETH by a plain transfer at the same time. The attacker rehearsed the exact technique six hours earlier on three test accounts.</p>
+
+<div class="callout live">
+  <p><strong>Still open at time of writing.</strong> Binance 14's code is still <code>0xef0100 63e842b0…</code>, the attacker's delegation. Every deposit that lands on that address can be swept by the attacker, and has been, three times already (20:24, 21:04 and 21:44 UTC). It held 129 ETH when this was written. Fixing it needs one EIP-7702 transaction from the Binance 14 key resetting the delegation to the zero address, and deposits should stop being routed there until that is done.</p>
+</div>
+
+<h2>The addresses</h2>
+<div class="panel kv">
+  <b>Victim (Binance 14)</b><span>0x28C6c06298d514Db089934071355E5743bf21d60 · nonce 18.9M · still delegated</span>
+  <b>Victim (2nd hot wallet)</b><span>0xDFd5293D8e347dFe59E90eFd55b2956a1343963d · nonce 15.7M · sent 28,005 ETH by plain transfer</span>
+  <b>Attacker signer</b><span>0x7c8601d4645b93cea45f71e118a729332e6b5ca0 · 16 outgoing txs total · first seen 02:28 UTC same day</span>
+  <b>Attacker code</b><span>0x63e842b054bd624a465454d533c33f573e9c6fae · deployed by the signer at 15:59 UTC (its nonce-5 CREATE)</span>
+  <b>Loot address</b><span>0x5227f603c1ee34ce3c06efe6477003bdfccb2f8c · Tether-blacklisted · holds 1.175B frozen USDT</span>
+  <b>ETH parked</b><span>0x8532FA14ACAf483729C449b8458aedDb900543D4 · 195,460 ETH · never spent (nonce 0)</span>
+</div>
+
+<h2>Timeline (UTC, 29 October 2026)</h2>
+<ul class="tl">
+  <li><time>02:28</time><p>Attacker signer makes its first ever transaction: deploys a contract (0x19bee294…). Gas came in via an internal transfer, consistent with a Tornado Cash withdrawal.</p></li>
+  <li><time>13:51 – 14:24</time><p><strong>Rehearsal 1 and 2.</strong> Two attacker-controlled accounts are 7702-delegated to 0x19bee294… and then swept with the same <code>0x8a179be4</code> function later used on Binance.</p></li>
+  <li><time>15:59</time><p>Attacker deploys the production payload, <strong>0x63e842b0…</strong>. Derived from the signer's address and nonce; this is not an inference from labels.</p></li>
+  <li><time>16:20 – 16:47</time><p><strong>Rehearsal 3.</strong> Account 0x43AEdb9B… is delegated to 0x63e842b0…, swept, then a withdraw call is tested. Full dress rehearsal of the real attack.</p></li>
+  <li><time>18:20</time><p>Signer receives 1.08 ETH for gas from 0xe4F9070e…</p></li>
+  <li class="hit"><time>20:20:59</time><p><strong>The set-code transaction.</strong> Type-4 tx <span class="addr">0xad99264d5532ae0dd04b2004eebda05f25657e70dacb764f7ac8d4ccd051298b</span> carries <strong>50 EIP-7702 authorizations, all for Binance 14, signed with 50 consecutive nonces</strong> (18,914,775 through 18,914,824). See "Why fifty" below.</p></li>
+  <li class="hit"><time>20:24:23</time><p><strong>The sweep.</strong> Tx <span class="addr">0x53bd38b816c23e74134786c29a8c18d792777998a3b9326047b583100e88e2f3</span>: attacker calls Binance 14, now running attacker code, with <code>sweep(0x5227f603…, [ETH, USDT, …63 more])</code>. 167,464 ETH and 1,615,409,499 USDT move in one call.</p></li>
+  <li class="hit"><time>20:24:47</time><p>Second Binance hot wallet 0xDFd5293D… sends 28,005 ETH to the loot address by ordinary transfer. Two keys, not one.</p></li>
+  <li><time>20:29 – 20:33</time><p>Loot sends 0.5 ETH test dust, then 500M USDT to 0x9749292D… and 200M USDT to 0x0Ddf0480…. Both are now Tether-blacklisted with zero balance; the funds moved one hop further before the freeze.</p></li>
+  <li><time>20:38:47</time><p>Loot moves <strong>195,460 ETH</strong> (about $447M) to fresh address 0x8532FA14…, where it still sits untouched.</p></li>
+  <li><time>21:04 and 21:44</time><p>Attacker sweeps Binance 14 again: 1,700 ETH and 370 ETH of fresh deposits. Proof the backdoor keeps paying.</p></li>
+  <li><time>21:22 – 22:02</time><p>Loot scatters tokens: 88.5M RLUSD, 217M ENA plus 29,934 wBETH, 7M UNI, 7.7T PEPE, each to a different fresh address.</p></li>
+  <li class="live"><time>now</time><p>Binance 14 still delegated to attacker code. Scammers are address-poisoning the loot wallet with fake "USDT" tokens from look-alike addresses, hoping the thief mis-pastes one.</p></li>
+</ul>
+
+<h2>How it worked</h2>
+<h3>EIP-7702 in one breath</h3>
+<p>Since Pectra, an ordinary key-based account can sign an "authorization" that says: run this contract's code as if it were mine. Wallets use it for batching and sponsored gas. The authorization is just a signature over <code>(chainId, contractAddress, nonce)</code>. Whoever holds the account's private key can sign one. Once set, the account keeps that code until another authorization replaces it.</p>
+<h3>Why this beats a normal drain</h3>
+<p>Draining a hot wallet the ordinary way means hundreds of transactions, one per token, each racing against Binance's own systems which were still sending from Binance 14 every few seconds. Installing code turns the account into a contract the attacker controls: one call, every asset, and the account keeps obeying afterwards. It also sidesteps per-token monitoring that watches for the hot wallet <em>sending</em>, because the sender of the sweep is the attacker's address, not Binance 14.</p>
+<h3>Why fifty authorizations</h3>
+<p>An authorization is only valid if its nonce equals the account's nonce at the moment the transaction executes. Binance 14 sends a transaction roughly every ten seconds, so the attacker could not know which nonce it would be on when their transaction was mined. They signed fifty in a row and submitted them all; the one that matched took effect, the rest were discarded. This is the signature of someone who studied the target's traffic pattern and understood 7702's validation rules precisely. It also means the attacker signed with the Binance 14 private key fifty times. There is no reading of this data in which the key was not in their hands.</p>
+
+<div class="callout">
+  <p><strong>What this is not.</strong> Not a smart-contract exploit, not a bridge bug, not a phishing of a user. The chain shows a hot-wallet private key being used by someone other than its owner, on two wallets. How the key left Binance's infrastructure is not visible on-chain and is not claimed here.</p>
+</div>
+
+<h2>Where the money is</h2>
+<div class="tw"><table>
+<thead><tr><th>Asset</th><th>Amount</th><th>Status</th><th>Where</th></tr></thead>
+<tbody>
+<tr><td>USDT</td><td class="num">1,175,464,711</td><td>Frozen (Tether blacklist)</td><td><span class="addr">0x5227f603… (loot)</span></td></tr>
+<tr><td>USDT</td><td class="num">700,000,000</td><td>Moved one hop before freeze; both hops now blacklisted</td><td><span class="addr">via 0x9749292D… and 0x0Ddf0480…</span></td></tr>
+<tr><td>ETH</td><td class="num">195,460</td><td>Parked, unspent</td><td><span class="addr">0x8532FA14ACAf483729C449b8458aedDb900543D4</span></td></tr>
+<tr><td>ETH</td><td class="num">~2,076</td><td>Remaining at loot</td><td><span class="addr">0x5227f603…</span></td></tr>
+<tr><td>RLUSD</td><td class="num">88,541,065</td><td>Freezable by issuer</td><td><span class="addr">0x5C23023C…</span></td></tr>
+<tr><td>ENA / wBETH</td><td class="num">217M / 29,934</td><td>Liquid</td><td><span class="addr">0x7f9DC988…</span></td></tr>
+<tr><td>UNI</td><td class="num">7,018,792</td><td>Liquid</td><td><span class="addr">0x42CDF00c…</span></td></tr>
+<tr><td>PEPE</td><td class="num">7.77T</td><td>Liquid</td><td><span class="addr">0x600d6F00…</span></td></tr>
+</tbody></table></div>
+<p>USDC figures are not in this report because the USDC leg left from the second hot wallet and other chains (Arbitrum, Avalanche), which this reconstruction does not yet cover. Circle has publicly confirmed a freeze. The BTC on Arkham's entity page is likewise out of scope for this Ethereum-only pass.</p>
+
+<h2>What a detector would have seen</h2>
+<p>HaskDetect scores behaviour, not labels. Reading only public chain data, these signals were available before the sweep landed:</p>
+<div class="sig">
+  <div><span class="n">01</span><div><b>Fresh signer, same-day lifecycle</b><small>First transaction at 02:28, attack at 20:24. Age under 24 hours is a strong prior on its own.</small></div></div>
+  <div><span class="n">02</span><div><b>Anonymous funding</b><small>Gas arrived by internal transfer with no visible sender history, the Tornado withdrawal shape.</small></div></div>
+  <div><span class="n">03</span><div><b>Rehearsal pattern</b><small>The same function selector (0x8a179be4) called on three throwaway accounts within hours, each immediately after a 7702 delegation. Three dress rehearsals is a louder signal than one.</small></div></div>
+  <div><span class="n">04</span><div><b>Type-4 transaction targeting a high-value account</b><small>A 7702 authorization whose signer is a top-100 balance address, submitted by an unrelated fresh account, should page a human. There were 50 of them in one transaction.</small></div></div>
+  <div><span class="n">05</span><div><b>Delegation to code deployed the same day by the submitter</b><small>Trivially checkable: the delegate address is the submitter's own CREATE output from six hours earlier.</small></div></div>
+  <div><span class="n">06</span><div><b>Three-and-a-half-minute gap</b><small>Set-code at 20:20:59, sweep at 20:24:23. Fast enough to need automation, slow enough that an alert on signal 04 would have beaten it.</small></div></div>
+</div>
+<p>Signals 04 and 05 are new to the post-Pectra world and are not in most exchange monitoring stacks yet. They should be.</p>
+
+<h2>Open threads</h2>
+<ul class="plain">
+  <li>Trace the 700M USDT second hop and the RLUSD, ENA, UNI and PEPE destinations forward; expect bridges or DEX swaps next.</li>
+  <li>Watch 0x8532FA14… (195,460 ETH). Any movement is the next chapter.</li>
+  <li>Reconstruct the second hot wallet (0xDFd5293D…) and the Arbitrum and Avalanche legs.</li>
+  <li>Confirm when, and whether, Binance resets the Binance 14 delegation.</li>
+</ul>
+
+<h2>Verify it yourself</h2>
+<p>Every address and hash above is public. For the 7702 authorization list: fetch transaction <code>0xad99264d…51298b</code> from any Ethereum node, read its <code>authorizationList</code>, and recover each signer from <code>keccak(0x05 || rlp([chainId, address, nonce]))</code>. For the attacker's contract: compute the CREATE address of <code>0x7c8601d4…</code> at nonce 5. For the current backdoor: <code>eth_getCode</code> on Binance 14 and look for the <code>0xef0100</code> prefix.</p>
+
+<footer>
+  <p>HaskDetect is a chain-forensics project by Hasky Labs. Findings are drawn from public Ethereum data at the time stated and may be revised as the case develops.</p>
+  <p>© 2026 Hasky Labs, Copenhagen. All rights reserved. Made by Hasky Labs, Copenhagen.</p>
+</footer>
+</div>
+</body>
+</html>
