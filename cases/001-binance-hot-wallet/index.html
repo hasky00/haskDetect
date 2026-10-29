@@ -130,6 +130,11 @@ code{font-family:var(--mono);font-size:.92em}
   <p><strong>What this is not.</strong> Not a smart-contract exploit, not a bridge bug, not a phishing of a user. The chain shows a hot-wallet private key being used by someone other than its owner, on two wallets. How the key left Binance's infrastructure is not visible on-chain and is not claimed here.</p>
 </div>
 
+<h2>What the backdoor looks like, byte by byte</h2>
+<p>Anyone can check whether an account has been hijacked this way with one call, <code>eth_getCode</code>. A normal key-based account returns <code>0x</code> (empty). Binance 14 returns:</p>
+<div class="panel"><p class="addr" style="margin:0"><strong>0x</strong><span style="color:var(--accent)">ef0100</span><strong>63e842b054bd624a465454d533c33f573e9c6fae</strong></p></div>
+<p>It reads in two parts. <code>ef0100</code> is the fixed three-byte flag EIP-7702 writes onto a delegated account; seeing it at all means the account is now executing another contract's code. The 20 bytes after it, <code>63e842b0…9c6fae</code>, are the address of that contract: here, the attacker's own payload, deployed by the attacker six hours before the attack. So the single line of code on the victim account names its attacker. As long as that line is present, the account is still under attacker control, and resetting it needs the account's own key, which the attacker also holds.</p>
+
 <h2>Where the money is</h2>
 <div class="tw"><table>
 <thead><tr><th>Asset</th><th>Amount</th><th>Status</th><th>Where</th></tr></thead>
