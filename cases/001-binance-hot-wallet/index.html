@@ -29,6 +29,8 @@ h1{font-size:clamp(28px,6vw,40px);line-height:1.1;margin:10px 0 8px;text-wrap:ba
 .meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-family:var(--mono);font-size:13px;color:var(--muted)}
 .status{display:inline-flex;align-items:center;gap:8px;background:var(--live-soft);color:var(--live);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:4px}
 .status i{width:8px;height:8px;border-radius:50%;background:var(--live);display:inline-block}
+.status.resolved{background:#0e2a1e;color:var(--ok)}
+.status.resolved i{background:var(--ok);animation:none}
 @media (prefers-reduced-motion:no-preference){.status i{animation:pulse 1.6s ease-in-out infinite}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 h2{font-size:22px;margin:40px 0 12px;letter-spacing:-.01em;text-wrap:balance}
@@ -77,8 +79,8 @@ code{font-family:var(--mono);font-size:.92em}
   <h1>The Binance 14 hot wallet drain: how a signed EIP-7702 backdoor swept 65 assets in one call</h1>
   <p class="lede">An on-chain reconstruction of the 29 October 2026 Binance incident, built from raw Ethereum node data. Every claim below links to a transaction hash you can verify yourself.</p>
   <div class="meta">
-    <span class="status"><i></i>Backdoor still live at time of writing</span>
-    <span>Written 29 Oct 2026, 23:40 CET</span>
+    <span class="status resolved"><i></i>Resolved — backdoor revoked 00:10 UTC, 30 Oct</span>
+    <span>Written 29 Oct 2026, 23:40 CET · updated 01:16 CET, 30 Oct</span>
     <span>Chain: Ethereum mainnet</span>
     <span>Source: public RPC + Blockscout, no proprietary labels</span>
   </div>
@@ -87,13 +89,14 @@ code{font-family:var(--mono);font-size:.92em}
 <h2>What happened, in one paragraph</h2>
 <p>Between 20:20 and 21:44 UTC on 29 October 2026, an attacker who held the private key for Binance's hot wallet <span class="addr">0x28C6c06298d514Db089934071355E5743bf21d60</span> ("Binance 14") did not drain it the ordinary way. Instead they used EIP-7702, the Pectra upgrade feature that lets a normal account borrow a contract's code, to install attacker-written code onto the Binance 14 account itself. Three and a half minutes later they called one function on it, <code>sweep(to, tokens[65])</code>, and 167,464 ETH plus 63 tokens including 1.615 billion USDT left in a single transaction. A second Binance hot wallet was emptied of 28,005 ETH by a plain transfer at the same time. The attacker rehearsed the exact technique six hours earlier on three test accounts.</p>
 
-<div class="callout live">
-  <p><strong>Still open at time of writing.</strong> Binance 14's code is still <code>0xef0100 63e842b0…</code>, the attacker's delegation. Every deposit that lands on that address can be swept by the attacker, and has been, three times already (20:24, 21:04 and 21:44 UTC). It held 129 ETH when this was written. Fixing it needs one EIP-7702 transaction from the Binance 14 key resetting the delegation to the zero address, and deposits should stop being routed there until that is done.</p>
+<div class="callout">
+  <p><strong>Resolved — backdoor revoked at 00:10:35 UTC, 30 October 2026 (block 26301896).</strong> For roughly 3 hours 46 minutes after the first sweep, Binance 14 ran the attacker's code and fresh deposits kept being swept — at least four times (20:24, 21:04, 21:44 UTC, and a ~2,962 ETH sweep at ~23:55 UTC caught live on the HaskDetect tracker). Binance then regained operational control of the wallet and sent a single EIP-7702 transaction (<span class="addr">0xafbf94c9…dac7209</span>) delegating the account to the zero address, which cleared the code. <code>eth_getCode</code> on Binance 14 now returns <code>0x</code> — a normal account again. New deposits there are no longer at risk. The stolen funds that already left are a separate matter: the ~195,460 ETH remains parked and the liquid tokens are gone; recovery now rests on the frozen stablecoins and exchange/bridge flags.</p>
 </div>
+<p class="sub" style="font-family:var(--mono);font-size:13px;color:var(--muted)">Open → revoked, caught end to end on the live tracker. The exact block the backdoor closed is recorded above.</p>
 
 <h2>The addresses</h2>
 <div class="panel kv">
-  <b>Victim (Binance 14)</b><span>0x28C6c06298d514Db089934071355E5743bf21d60 · nonce 18.9M · still delegated</span>
+  <b>Victim (Binance 14)</b><span>0x28C6c06298d514Db089934071355E5743bf21d60 · nonce 18.9M · delegation revoked 00:10 UTC 30 Oct, now owner-controlled</span>
   <b>Victim (2nd hot wallet)</b><span>0xDFd5293D8e347dFe59E90eFd55b2956a1343963d · nonce 15.7M · sent 28,005 ETH by plain transfer</span>
   <b>Attacker signer</b><span>0x7c8601d4645b93cea45f71e118a729332e6b5ca0 · 16 outgoing txs total · first seen 02:28 UTC same day</span>
   <b>Attacker code</b><span>0x63e842b054bd624a465454d533c33f573e9c6fae · deployed by the signer at 15:59 UTC (its nonce-5 CREATE)</span>
@@ -167,7 +170,7 @@ code{font-family:var(--mono);font-size:.92em}
   <li>Trace the 700M USDT second hop and the RLUSD, ENA, UNI and PEPE destinations forward; expect bridges or DEX swaps next.</li>
   <li>Watch 0x8532FA14… (195,460 ETH). Any movement is the next chapter.</li>
   <li>Reconstruct the second hot wallet (0xDFd5293D…) and the Arbitrum and Avalanche legs.</li>
-  <li>Confirm when, and whether, Binance resets the Binance 14 delegation.</li>
+  <li>Done: Binance revoked the Binance 14 delegation at 00:10:35 UTC, 30 Oct (block 26301896, tx 0xafbf94c9…). Watch that it stays revoked.</li>
 </ul>
 
 <h2>Verify it yourself</h2>
