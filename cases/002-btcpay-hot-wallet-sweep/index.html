@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HaskDetect Case 002</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a forensic case file. One column of running text, evidence blocks set in mono on slightly raised panels, a strict vertical timeline. */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --fg:#141a21; --muted:#5b6673; --rule:#d5dbe2;
+  --accent:#b54708; --accent-soft:#fde8d4; --live:#9f1239; --live-soft:#fde2e7; --ok:#1f6f4a;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1317; --panel:#171c22; --fg:#e6eaee; --muted:#95a0ab; --rule:#2a323b;
+  --accent:#f0a05a; --accent-soft:#3a2614; --live:#fb7185; --live-soft:#3b1620; --ok:#5fd3a0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1317; --panel:#171c22; --fg:#e6eaee; --muted:#95a0ab; --rule:#2a323b;
+  --accent:#f0a05a; --accent-soft:#3a2614; --live:#fb7185; --live-soft:#3b1620; --ok:#5fd3a0; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.55;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.wrap{max-width:760px;margin:0 auto}
+header{padding-block:40px 24px;border-bottom:1px solid var(--rule)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(28px,6vw,40px);line-height:1.1;margin:10px 0 8px;text-wrap:balance;letter-spacing:-.01em}
+.lede{font-size:18px;color:var(--muted);margin:0 0 20px;max-width:62ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.status{display:inline-flex;align-items:center;gap:8px;background:var(--live-soft);color:var(--live);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:4px}
+.status i{width:8px;height:8px;border-radius:50%;background:var(--live);display:inline-block}
+.status.resolved{background:#0e2a1e;color:var(--ok)}
+.status.resolved i{background:var(--ok);animation:none}
+@media (prefers-reduced-motion:no-preference){.status i{animation:pulse 1.6s ease-in-out infinite}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+h2{font-size:22px;margin:40px 0 12px;letter-spacing:-.01em;text-wrap:balance}
+h3{font-size:16px;margin:24px 0 8px}
+p{margin:0 0 14px;max-width:68ch}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:14px 16px;margin:16px 0}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-family:var(--mono);font-size:13px}
+.kv b{color:var(--muted);font-weight:500}
+.kv span{min-width:0;overflow-wrap:anywhere}
+.addr{font-family:var(--mono);font-size:13px;overflow-wrap:anywhere}
+.tl{list-style:none;margin:16px 0;padding:0;border-left:2px solid var(--rule)}
+.tl li{position:relative;padding:0 0 18px 20px}
+.tl li::before{content:"";position:absolute;left:-6px;top:7px;width:10px;height:10px;border-radius:50%;background:var(--rule)}
+.tl li.hit::before{background:var(--accent)}
+.tl li.live::before{background:var(--live)}
+.tl time{font-family:var(--mono);font-size:13px;color:var(--muted);display:block;margin-bottom:2px}
+.tl p{margin:0}
+.callout{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 16px;margin:20px 0;border-radius:0 6px 6px 0}
+.callout.live{border-color:var(--live);background:var(--live-soft)}
+.callout p:last-child{margin:0}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto;margin:16px 0}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.num{text-align:right;font-family:var(--mono)}
+td .addr{font-size:12px}
+.sig{display:grid;gap:10px;margin:16px 0}
+.sig>div{display:grid;grid-template-columns:32px minmax(0,1fr);gap:12px;align-items:start;background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:14px 16px}
+.sig>div>div{min-width:0}
+.sig .n{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600;padding-top:3px}
+.sig b{display:block;margin-bottom:3px;font-size:16px}
+.sig small{color:var(--muted);font-size:14px;line-height:1.5}
+ul.plain{padding-left:20px;margin:0 0 14px}
+ul.plain li{margin-bottom:6px}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted)}
+footer p{margin:0 0 6px}
+a{color:var(--accent)}
+code{font-family:var(--mono);font-size:.92em}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">HaskDetect · Case 002 · Chain forensics</div>
+  <h1>The BTCPay Server hot wallet sweep: 10,471 merchant addresses drained into one Taproot wallet</h1>
+  <p class="lede">An on-chain reconstruction of the November 2026 BTCPay Server incident, built from public Bitcoin node data via mempool.space. Every figure below comes from the transactions themselves and can be re-pulled with the script in <code>tracer/</code>.</p>
+  <div class="meta">
+    <span class="status"><i></i>Open — sweeps still landing at time of writing</span>
+    <span>Written 2 Nov 2026, 10:00 CET</span>
+    <span>Chain: Bitcoin mainnet</span>
+    <span>Source: mempool.space public API, no proprietary labels</span>
+  </div>
+</header>
+
+<h2>What happened, in one paragraph</h2>
+<p>On 1 November 2026 at 22:25 UTC, BTCPay Server told every operator to shut their instance down: hot wallets were being swept. The attacker's collection address, published by founder Nicolas Dorier, is <span class="addr">bc1p0f7wmcnesrapznymf9ljdn04pudgmh96sqtrm9vmgqxdh666fh8qvn63r7</span>. The chain shows it received its first stolen coins on <strong>30 October at 13:35 UTC</strong>, roughly 57 hours before the alert. Between then and the alert, 321 sweep transactions moved 16.73 BTC from 10,471 distinct merchant addresses into it. Only 1.73 BTC arrived after the alert. The stolen coins are being cashed out in round lots (5.5, 4.71, 1.3, 0.67, 0.65 BTC) to fresh single-use <code>bc1q</code> addresses, none of which has moved on yet. The address is still active: the last confirmed sweep was 07:35 UTC on 2 November and another is sitting in the mempool as this is written.</p>
+
+<div class="callout live">
+  <p><strong>Open.</strong> Dorier's screenshot (about 00:30 UTC, 2 Nov) showed 18.75 BTC received and 522 transactions. Nine hours later the address shows 19.35 BTC received and 587 transactions. Instances that are still up and still unpatched are still being emptied. The victims' entry point (how admin access was obtained on pre-2.4.2 instances) is not visible on-chain and is not claimed here; BTCPay says it is investigating.</p>
+</div>
+
+<h2>The addresses</h2>
+<div class="panel kv">
+  <b>Attacker collector</b><span>bc1p0f7wmcnesrapznymf9ljdn04pudgmh96sqtrm9vmgqxdh666fh8qvn63r7 · Taproot (P2TR) · first seen 30 Oct 13:35 UTC · 19.35 BTC in, 19.32 BTC out, 0.03 BTC left plus 0.0032 BTC unconfirmed</span>
+  <b>Victims</b><span>10,471 distinct input addresses across 568 sweep transactions. 10,387 are native SegWit (bc1q), 134 wrapped SegWit (3…), 118 Taproot, 34 P2WSH, 2 legacy. This is the address mix of BTCPay-generated hot wallets, not of exchange or whale custody.</span>
+  <b>Largest cash-out</b><span>bc1qn3fze9w3c0m38y84v76qr2z5dz9cjx0hz4aeva · 5.5 BTC · 1 Nov 17:06 UTC · unspent</span>
+  <b>Second largest</b><span>bc1q8hyw6c47t4cskvn655csdc8ym7wc7tcnj6ws4j · 4.71 BTC · 1 Nov 22:29 UTC, four minutes after the public alert · unspent</span>
+  <b>First cash-out (test)</b><span>bc1pgayrj6fnw0fy0978msp3np6hkqpaqpnnmszcjrfujy8cklf4ke7ssrzkle · 0.36 BTC · 30 Oct 13:45 UTC, ten minutes after the first sweep · already spent onward</span>
+</div>
+
+<h2>Timeline (UTC)</h2>
+<ul class="tl">
+  <li class="hit"><time>30 Oct 13:35</time><p><strong>First blood.</strong> Two sweeps land in block 973,827: <span class="addr">7a81bddd918af1fb49b323f56820491e9e4147355adca9a1a4418c9ec1bb1b1d</span> (0.32 BTC) and <span class="addr">335c29def23e9ebdb2889f8029408cd1415de9e740f2925d48b92f2e3971d231</span> (0.044 BTC). The collector address did not exist on-chain before this.</p></li>
+  <li><time>30 Oct 13:45</time><p>Ten minutes later, 0.36 BTC is moved out to a Taproot address and spent onward. A cash-out test, run before scaling.</p></li>
+  <li><time>30 Oct 18:09 – 21:37</time><p>A 21-input consolidation (0.17 BTC) and then fifteen small sweeps in one block (973,883), the smallest 0.00011 BTC. The tooling is being exercised on low-value targets.</p></li>
+  <li><time>31 Oct</time><p>Almost silent. One sweep at 02:xx, one 0.072 BTC cash-out at 04:41. Dorier's forensic window starts here; BTCPay had no reports yet.</p></li>
+  <li><time>1 Nov 01:00 – 13:00</time><p>Trickle: around twenty sweeps across twelve hours.</p></li>
+  <li class="hit"><time>1 Nov 14:00</time><p><strong>Ramp.</strong> 18 sweeps in the 14:00 hour, 38 at 15:00, 31 at 16:00. Cash-outs of 0.48, 0.65, 0.67, 1.3 and 1.12 BTC go to fresh bc1q addresses between 14:21 and 16:42.</p></li>
+  <li class="hit"><time>1 Nov 16:50:09</time><p><strong>Three 566-input transactions in one block.</strong> <span class="addr">8e25f0a5…54ec11</span>, <span class="addr">8f64f5c2…4cb9f0</span>, <span class="addr">b198d4f6…a26fd</span>: 1.86 + 1.78 + 1.74 BTC, 1,698 inputs, same block. This is a scripted batch drain, not a person clicking Send.</p></li>
+  <li><time>1 Nov 17:06</time><p>5.5 BTC out in one round lot to <span class="addr">bc1qn3fze9w3…z4aeva</span>. Sixteen minutes after the batch landed.</p></li>
+  <li><time>1 Nov 19:00 – 21:00</time><p>Peak: 40, 56 and 48 sweeps per hour. The busiest single block (974,191) carries 27 of them.</p></li>
+  <li class="live"><time>1 Nov 22:25</time><p><strong>BTCPay Server posts the alert.</strong> 321 sweeps and 16.73 BTC are already in. Four minutes later, at 22:29, the attacker consolidates 138 inputs and sends 4.71 BTC to a fresh address.</p></li>
+  <li><time>2 Nov 00:00 – 07:35</time><p>Sweeps do not stop: 61 in the 00:00 hour, then 20 to 34 an hour through the night. Three more cash-outs (1.30, 0.49, 0.55 BTC). Last confirmed sweep 07:35 UTC; one more unconfirmed.</p></li>
+</ul>
+
+<h2>How it worked, from the chain's point of view</h2>
+<h3>A BTCPay hot wallet is a seed on a web server</h3>
+<p>BTCPay's hot-wallet option stores the signing seed on the same internet-facing machine that runs the checkout. Whoever is a server administrator can read it, or simply use the built-in Send page. BTCPay's own founder has said the attacker logged in as admin on instances older than 2.4.2; how is still under investigation. On-chain we cannot see logins. What we can see is the result: hundreds of unrelated small wallets, each sending its entire balance to the same brand-new Taproot address, at 1 to 2 sat/vB.</p>
+<h3>Two sweep styles, one hand</h3>
+<p>305 of the 568 sweeps have a single input: one UTXO, the whole wallet, one output to the collector. The rest consolidate many UTXOs from one victim at once, up to 1,316 inputs in a single transaction. Both styles pay almost nothing in fees (median 2.1 sat/vB; the three giant batches at 16:50 paid 1.0) and 464 of them signal RBF. Low fee, RBF on, hundreds of victims, two days of patience: the attacker was in no hurry and expected no one to notice. They were right for 57 hours.</p>
+<h3>Why 10,471 addresses is not 10,471 victims</h3>
+<p>A BTCPay store generates a fresh receive address for every invoice, so one merchant's hot wallet can hold hundreds of UTXOs on hundreds of addresses. The 568 sweep transactions are the better proxy for the number of victim wallets, and even that over-counts stores that were swept more than once. The right order of magnitude is "a few hundred merchants", not ten thousand.</p>
+
+<div class="callout">
+  <p><strong>What this is not.</strong> Not a Bitcoin protocol flaw, not a Lightning channel drain (that was the August 2026 BTCPay incident, fixed in 2.4.2), not a phishing campaign against users. The chain shows legitimately-signed transactions from wallets whose keys were readable by an attacker with admin access to the server holding them. Who that attacker is, and whether they reused access gained during the August window, is not visible here.</p>
+</div>
+
+<h2>Where the money is</h2>
+<div class="tw"><table>
+<thead><tr><th>Amount</th><th>Destination</th><th>When (UTC)</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td class="num">5.50</td><td><span class="addr">bc1qn3fze9w3c0m38y84v76qr2z5dz9cjx0hz4aeva</span></td><td>1 Nov 17:06</td><td>Unspent</td></tr>
+<tr><td class="num">4.71</td><td><span class="addr">bc1q8hyw6c47t4cskvn655csdc8ym7wc7tcnj6ws4j</span></td><td>1 Nov 22:29</td><td>Unspent</td></tr>
+<tr><td class="num">1.30</td><td><span class="addr">bc1q8q4aqg9fyxch0k48wf2xcuqdfaqpc55un0mnsc</span></td><td>1 Nov 16:42</td><td>Unspent</td></tr>
+<tr><td class="num">1.30</td><td><span class="addr">bc1qjdqn0tqm4agmsq5njss2snuanyqu54mjkjm8gr</span></td><td>2 Nov 00:53</td><td>Unspent</td></tr>
+<tr><td class="num">1.12</td><td><span class="addr">bc1qwurqa0yzggsurz86mku3dqnf5pdnjkq0089vvt</span></td><td>1 Nov 16:14</td><td>Unspent</td></tr>
+<tr><td class="num">0.87</td><td><span class="addr">bc1qvc9lyhulpfup3r57nphttsdqdn8tdyxs4wp2mv</span></td><td>1 Nov 17:06</td><td>Unspent</td></tr>
+<tr><td class="num">0.67</td><td><span class="addr">bc1qn63tuet8rsnlhlql9m6vnx0uh8sse6nhlvl2pa</span></td><td>1 Nov 15:23</td><td>Unspent</td></tr>
+<tr><td class="num">0.65</td><td><span class="addr">bc1qvlf4z70mrjssejvyk94fmxte3lj0xqepy7kxsz</span></td><td>1 Nov 15:15</td><td>Unspent</td></tr>
+<tr><td class="num">0.55</td><td><span class="addr">bc1qzndsy3lel04ayyfmhfcw3sw4wc0jh0ykgulpr3</span></td><td>2 Nov 06:49</td><td>Unspent</td></tr>
+<tr><td class="num">0.48</td><td><span class="addr">bc1q5ryspczuxjkgtglm6nx9ejdv82fjfdmxa2dklr</span></td><td>1 Nov 14:21</td><td>Unspent</td></tr>
+<tr><td class="num">0.36</td><td><span class="addr">bc1qglppv5dv7cvah6c8xewz8ssp0syaparkrz49jd</span></td><td>1 Nov 16:09</td><td>Unspent</td></tr>
+<tr><td class="num">0.36</td><td><span class="addr">bc1pgayrj6fn…ssrzkle</span></td><td>30 Oct 13:45</td><td>Spent onward (test)</td></tr>
+<tr><td class="num">0.18</td><td><span class="addr">bc1qjfds283y…qlyesj</span></td><td>30 Oct 18:09</td><td>Spent onward</td></tr>
+<tr><td class="num">≈0.45</td><td colspan="2">five smaller lots (0.21, 0.07, 0.06, 0.05, 0.05)</td><td>Unspent</td></tr>
+</tbody></table></div>
+<p>Seventeen of nineteen outgoing payments went to an address that had never been used before and has not moved since. Round amounts to fresh single-use addresses is the shape of exchange deposits: each lot is sized for a deposit, parked, and the attacker waits to see which ones get frozen. The two that did move (30 Oct) were the small early tests. The full list with balances is in <code>evidence/destination_addresses.json</code>; those eighteen addresses are the ones for exchanges to flag.</p>
+
+<h2>What a detector would have seen</h2>
+<p>HaskDetect scores behaviour, not labels. Reading only public mempool data, these signals were available from the first afternoon:</p>
+<div class="sig">
+  <div><span class="n">01</span><div><b>Fan-in to a newborn address</b><small>A Taproot address with zero history receives from 2, then 21, then 15 unrelated wallets in one day. Many-to-one from strangers into a fresh address is the opposite of normal merchant flow.</small></div></div>
+  <div><span class="n">02</span><div><b>Full-balance sends from small wallets</b><small>305 single-input, single-output sweeps: the whole UTXO, no change. A merchant till does not empty itself, with no change output, to a stranger.</small></div></div>
+  <div><span class="n">03</span><div><b>Send-then-test within ten minutes</b><small>First sweep 13:35, first cash-out 13:45, and that cash-out was spent on again. Confirming the exit works before scaling is textbook rehearsal, the Bitcoin twin of Case 001's three EIP-7702 dress rehearsals.</small></div></div>
+  <div><span class="n">04</span><div><b>Patient fees, RBF on</b><small>Median 2.1 sat/vB with replace-by-fee signalled on 464 of 568. The attacker optimised for cost over speed because nothing was chasing them. Theft at the minimum fee rate is a behavioural tell on its own.</small></div></div>
+  <div><span class="n">05</span><div><b>Industrial consolidation</b><small>Three 566-input transactions in the same block, then a 5.5 BTC round lot out sixteen minutes later. Scripted collection followed by a timed cash-out.</small></div></div>
+  <div><span class="n">06</span><div><b>Round-lot exits to virgin addresses</b><small>5.5, 4.71, 1.3, 1.3, 0.67, 0.65 BTC, each to an address with no past and no future. Deposit-sized, parked, waiting to see what gets frozen.</small></div></div>
+</div>
+<p>Signal 01 fired 57 hours before the public alert. A watcher on the BTCPay side needs none of this: any hot wallet whose entire balance leaves to an address that hundreds of other BTCPay wallets are also paying is compromised, and that check is one API call per outgoing transaction.</p>
+
+<h2>Open threads</h2>
+<ul class="plain">
+  <li>Watch the 17 parked bc1q addresses. First movement tells us which exchange, or which mixer.</li>
+  <li>Cluster the 10,471 victim addresses by common-input ownership to get a real merchant count.</li>
+  <li>Check whether any victim address also appears in the August 2026 LND-credential incident flows; that would support the "reused access" theory.</li>
+  <li>Litecoin: a BTCPay instance with an LTC hot wallet would be swept the same way. One LTC address holding 3,432 LTC with zero outgoing has been flagged in community discussion; not yet tied to this attacker on-chain and not included above.</li>
+  <li>Re-run <code>tracer/05_btc_address_sweeps.py</code> daily until the inflow stops.</li>
+</ul>
+
+<h2>Verify it yourself</h2>
+<p>Every address and hash above is public. Run <code>python3 tracer/05_btc_address_sweeps.py</code> for the live summary, or open <a href="https://mempool.space/address/bc1p0f7wmcnesrapznymf9ljdn04pudgmh96sqtrm9vmgqxdh666fh8qvn63r7">the collector on mempool.space</a>. The raw transaction list at the time of writing (587 transactions, 8 MB) is in <code>evidence/attacker_txs_all.json</code>; <code>evidence/destination_addresses.json</code> holds the balance of each cash-out address at the same moment.</p>
+
+<footer>
+  <p>HaskDetect is a chain-forensics project by Hasky Labs. Findings are drawn from public Bitcoin data at the time stated and may be revised as the case develops.</p>
+  <p>© 2026 Hasky Labs, Copenhagen. All rights reserved. Made by Hasky Labs, Copenhagen.</p>
+</footer>
+</div>
+</body>
+</html>

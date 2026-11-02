@@ -1,0 +1,308 @@
+{
+ "bc1pgayrj6fnw0fy0978msp3np6hkqpaqpnnmszcjrfujy8cklf4ke7ssrzkle": {
+  "address": "bc1pgayrj6fnw0fy0978msp3np6hkqpaqpnnmszcjrfujy8cklf4ke7ssrzkle",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 36052091,
+   "spent_txo_count": 1,
+   "spent_txo_sum": 36052091,
+   "tx_count": 2
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1q4lwqjw5870wf8v3uw6dlsc97ws50fg53xkrxnr": {
+  "address": "bc1q4lwqjw5870wf8v3uw6dlsc97ws50fg53xkrxnr",
+  "chain_stats": {
+   "funded_txo_count": 2,
+   "funded_txo_sum": 5498986,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 2
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1q5ryspczuxjkgtglm6nx9ejdv82fjfdmxa2dklr": {
+  "address": "bc1q5ryspczuxjkgtglm6nx9ejdv82fjfdmxa2dklr",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 47905043,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1q8hyw6c47t4cskvn655csdc8ym7wc7tcnj6ws4j": {
+  "address": "bc1q8hyw6c47t4cskvn655csdc8ym7wc7tcnj6ws4j",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 471000000,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1q8q4aqg9fyxch0k48wf2xcuqdfaqpc55un0mnsc": {
+  "address": "bc1q8q4aqg9fyxch0k48wf2xcuqdfaqpc55un0mnsc",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 130000000,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1qglppv5dv7cvah6c8xewz8ssp0syaparkrz49jd": {
+  "address": "bc1qglppv5dv7cvah6c8xewz8ssp0syaparkrz49jd",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 35579438,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1qjdqn0tqm4agmsq5njss2snuanyqu54mjkjm8gr": {
+  "address": "bc1qjdqn0tqm4agmsq5njss2snuanyqu54mjkjm8gr",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 129504468,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1qjfds283ynwmhlt5uvfkn2z5k845sx3f9qlyesj": {
+  "address": "bc1qjfds283ynwmhlt5uvfkn2z5k845sx3f9qlyesj",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 17508878,
+   "spent_txo_count": 1,
+   "spent_txo_sum": 17508878,
+   "tx_count": 2
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1qk2ssf2cumr3dugq46c8qvl7008584f4h8wgjhl": {
+  "address": "bc1qk2ssf2cumr3dugq46c8qvl7008584f4h8wgjhl",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 7200000,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1qlea5p4c4vxjs0vul23muv9qys8nmvx526u9v4j": {
+  "address": "bc1qlea5p4c4vxjs0vul23muv9qys8nmvx526u9v4j",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 20532718,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1qn3fze9w3c0m38y84v76qr2z5dz9cjx0hz4aeva": {
+  "address": "bc1qn3fze9w3c0m38y84v76qr2z5dz9cjx0hz4aeva",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 550000000,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1qn63tuet8rsnlhlql9m6vnx0uh8sse6nhlvl2pa": {
+  "address": "bc1qn63tuet8rsnlhlql9m6vnx0uh8sse6nhlvl2pa",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 67000000,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1qnp67a8zfeenmlvqwsy8ffkyz5pxrrxtkvu3u9p": {
+  "address": "bc1qnp67a8zfeenmlvqwsy8ffkyz5pxrrxtkvu3u9p",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 6479272,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1qvc9lyhulpfup3r57nphttsdqdn8tdyxs4wp2mv": {
+  "address": "bc1qvc9lyhulpfup3r57nphttsdqdn8tdyxs4wp2mv",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 86902496,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1qvlf4z70mrjssejvyk94fmxte3lj0xqepy7kxsz": {
+  "address": "bc1qvlf4z70mrjssejvyk94fmxte3lj0xqepy7kxsz",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 65000000,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1qwek0k639s8hmcvc5sxu4jqzf832mdhec7sxxnt": {
+  "address": "bc1qwek0k639s8hmcvc5sxu4jqzf832mdhec7sxxnt",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 4807511,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1qwurqa0yzggsurz86mku3dqnf5pdnjkq0089vvt": {
+  "address": "bc1qwurqa0yzggsurz86mku3dqnf5pdnjkq0089vvt",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 111506206,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ },
+ "bc1qzndsy3lel04ayyfmhfcw3sw4wc0jh0ykgulpr3": {
+  "address": "bc1qzndsy3lel04ayyfmhfcw3sw4wc0jh0ykgulpr3",
+  "chain_stats": {
+   "funded_txo_count": 1,
+   "funded_txo_sum": 54700935,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 1
+  },
+  "mempool_stats": {
+   "funded_txo_count": 0,
+   "funded_txo_sum": 0,
+   "spent_txo_count": 0,
+   "spent_txo_sum": 0,
+   "tx_count": 0
+  }
+ }
+}
