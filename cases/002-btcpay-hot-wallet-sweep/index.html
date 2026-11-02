@@ -80,7 +80,7 @@ code{font-family:var(--mono);font-size:.92em}
   <p class="lede">An on-chain reconstruction of the November 2026 BTCPay Server incident, built from public Bitcoin node data via mempool.space. Every figure below comes from the transactions themselves and can be re-pulled with the script in <code>tracer/</code>.</p>
   <div class="meta">
     <span class="status"><i></i>Open — sweeps still landing at time of writing</span>
-    <span>Written 2 Nov 2026, 10:00 CET</span>
+    <span>Written 2 Nov 2026, 10:00 CET · updated 10:30 CET</span>
     <span>Chain: Bitcoin mainnet</span>
     <span>Source: mempool.space public API, no proprietary labels</span>
   </div>
@@ -161,6 +161,20 @@ code{font-family:var(--mono);font-size:.92em}
   <div><span class="n">06</span><div><b>Round-lot exits to virgin addresses</b><small>5.5, 4.71, 1.3, 1.3, 0.67, 0.65 BTC, each to an address with no past and no future. Deposit-sized, parked, waiting to see what gets frozen.</small></div></div>
 </div>
 <p>Signal 01 fired 57 hours before the public alert. A watcher on the BTCPay side needs none of this: any hot wallet whose entire balance leaves to an address that hundreds of other BTCPay wallets are also paying is compromised, and that check is one API call per outgoing transaction.</p>
+
+<h2>Timing against the release history</h2>
+<p>Three BTCPay releases frame the first sweep. <strong>v2.4.6</strong> went out on 26 October at 14:25 UTC and fixed an API-key scope escape (#7684) that let a restricted key owned by a server admin act with full admin rights. <strong>v2.4.7</strong> went out on 29 October and fixed 85 findings from Anthropic's open-source scanner, with the diffs public on GitHub the same day. The collector address received its first stolen coins on <strong>30 October at 13:35 UTC</strong>: roughly 24 hours after the 2.4.7 diffs were published, four days after 2.4.6.</p>
+<p>Two theories are on the table for how the attacker became admin on so many pre-2.4.2 servers. One is reused access harvested during the August LND incident. The other is a one-day exploit built from the published fixes and aimed at servers that never updated. The chain cannot read logs, but it can read a calendar. An attacker holding admin access since August had three months to cash out and no reason to begin the day after a patch landed. An attacker who learned of the bug from the patch would start exactly then. The timing favours the second theory. It is an inference, not a finding, and the victims' login logs that BTCPay has asked for would settle it either way.</p>
+<p>A cross-check against August victims was attempted and could not be done: no attacker address from the August incident was ever published, and those thefts went through LND's internal wallet, a different key tree from the on-chain hot wallets swept here.</p>
+
+<h2>Are the fixes enough</h2>
+<p>For a server on 2.4.7, probably yes for this specific entry, with a caveat BTCPay itself has stated: root cause is not confirmed, so "no credible reports on 2.4.7" is an observation, not a guarantee. The wider answer is no, because the incident is not really about one bug. It is about a design in which the signing seed sits inside the same web application as the login form, so that any authentication flaw anywhere in the stack becomes a wallet drain. Patching closes the door that was used; it does not change that the keys are behind the door.</p>
+<p>Three things would change the risk class, none of which a point release can deliver on its own. First, the hot wallet should be a separate process from the web app, on a separate host or at least a separate container with its own authentication, so that an admin session on BTCPay cannot sign. Second, hot-wallet spends need a policy layer: velocity limits, a cap on the amount per hour, and a rule that a full-balance send to a never-seen address requires a second factor or a delay. The attacker here sent from each wallet exactly once, for everything, to a stranger. A one-line policy would have caught 568 out of 568. Third, operators who ran 2.4.1 or earlier with a hot wallet should treat the seed as burned and move to a fresh one, because a patch cannot un-read a seed that was already exfiltrated.</p>
+
+<h2>Where the parked lots most likely go</h2>
+<p>Seventeen deposits in round amounts, each to a fresh <code>bc1q</code> address, each left untouched: that is not how a mixer is fed and not how a self-custody wallet behaves. CoinJoin inputs are standardised denominations, not 4.71 and 5.5. A wallet consolidates. What this looks like is deposit addresses at one or more exchanges or instant-swap services, each lot sized to sit under a verification or manual-review threshold, and each left alone until the attacker is confident it has not been frozen. The 30 October test (0.36 BTC in, out again within a day) is consistent with checking that a particular off-ramp works before sending the big lots to it.</p>
+<p>The likely path from here is swaps to a privacy coin or a stablecoin on another chain through services that do not require identification, followed by the usual chain-hopping. The least likely path is that the coins move on-chain again as Bitcoin: once an exchange or swap service holds them, the next movement is internal to that service and invisible to us. So the useful window is now, while the 17 lots are still on-chain and still unspent. Whoever controls those deposit addresses can identify the account holder today. In a week the question will be moot.</p>
+<p>The one scenario that would change this reading is if a parked lot moves to an address that itself fans out again on-chain. That would mean the lots are the attacker's own staging, not a custodian's, and the hunt continues on the public ledger. The daily tracer run is set up to notice.</p>
 
 <h2>Open threads</h2>
 <ul class="plain">
